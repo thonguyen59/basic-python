@@ -31,10 +31,34 @@ def tinh(a: int, b: float = 3) -> int:
     chia = a / b
     return cong
 
+def add(*args):
+    print(type(args))
+    print(args)
+
+def kieu_lambda():
+    cong = (lambda x: 12 * x + 1)(5)
+    print(cong)
+
+def tinh_chu_vu(*args):
+    """tuple"""
+    if (len(args) == 3):
+        print('Chu vi tam giac: {}'.format(sum(args)))
+    elif (len(args) == 4):
+        print('Chu vi tu giac: {}'.format(sum(args)))
+
+
+def tinh_chu_vy(**kwargs):
+    """dict"""
+    if kwargs.get('a') and kwargs.get('b') > 0 and kwargs.get('c'):
+        print('Hello')
+
+
 
 if __name__ == '__main__':
-    cong = tinh(8.5)
+    # tinh_chu_vu(1,2,3)
+    # tinh_chu_vu(2,5,5,6)
 
-    cong = (lambda x: 12 * x + 1)(5)
+    tinh_chu_vy(b=2, c=3, a=4)
+    tinh_chu_vy(a=2, b=3, c=4, d=5)
 
-    print(cong)
+
