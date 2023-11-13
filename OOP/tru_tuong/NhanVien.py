@@ -1,4 +1,5 @@
 import random
+from abc import ABC, abstractmethod
 
 
 class CongTy:
@@ -50,7 +51,16 @@ class CongTy:
         return str([self.maNhanVien, self.hoTen, self.luongCB, self.luongThang])
 
 
-class NhanVien:
+class NhanVienTruuTuong(ABC):
+    @abstractmethod
+    def xuat(self):
+        pass
+
+    @abstractmethod
+    def tinhLuong(self):
+        pass
+
+class NhanVien(NhanVienTruuTuong):
     def __init__(self, maNhanVien: int, **kwargs):
         self._maNhanVien = maNhanVien
         self._hoTen = kwargs.get('hoTen', '')
@@ -87,10 +97,6 @@ class nvVanPhong(NhanVien):
     def tinh_luong(self):
         self.luongThang = self._luongCB + (self.__soNgayLam * 150_000)
 
-    @property
-    def soNgayLam(self):
-        return self.__soNgayLam
-
     def xuat(self):
         super().xuat()
         print("Số ngày làm việc: ", self.__soNgayLam)
@@ -117,19 +123,6 @@ class nvBanHang(NhanVien):
     def __str__(self):
         return str([self.maNhanVien, self.hoTen, self.luongCB, self.soSP, self.luongThang])
 
-class nvQuanLy(nvVanPhong):
-    def __init__(self, maNhanVien: int, **kwargs):
-        super().__init__(maNhanVien, **kwargs)
-        self.__hsTrachNhiem = kwargs.get('hsTrachNhiem', 0)
-
-    def tinh_luong(self):
-        if self.__hsTrachNhiem > 3.5:
-            self._luongThang = (self._luongCB + self.soNgayLam * 250_000 * self.__hsTrachNhiem) * 1,2
-        else:
-            self._luongThang = self._luongCB + self.soNgayLam * 250_000 * self.__hsTrachNhiem
-
-    def __str__(self):
-        return str([self._maNhanVien, self._hoTen, self._luongCB, self.soNgayLam, self.__hsTrachNhiem, self._luongThang])
 
 # Bắt đầu tạo data
 dsNhanVien = [nvVanPhong(i, hoTen=f'Van Phong {i}', luongCB=random.randint(10_000_000, 45_000_000),
@@ -143,30 +136,25 @@ dsNhanVien.extend([nvBanHang(i, hoTen=f'Ban Hang {i+100}', luongCB=random.randin
 # Kết thúc tạo data
 
 
-# if __name__ == '__main__':
-#     cty = CongTy(maCongTy='CT1', tenCongTy='Cong Ty 1')
-#     cty.them_nhan_vien(dsNhanVien)
-#
-#     cty.tinh_luong_thang_NV()
-#     cty.xuat_tat_ca_nhan_vien()
-#
-#     nv_luong_cao_nhat = cty.tim_NV_luong_cao_nhat()
-#     if nv_luong_cao_nhat is not None:
-#         print('Nhân viên có lương cao nhất:', nv_luong_cao_nhat._hoTen)
-#     else:
-#         print('Không có nhân viên')
-#
-#     nv_bh_co_luong_thap_nhat = cty.tim_NV_BH_luong_thap_nhat()
-#     if nv_bh_co_luong_thap_nhat is not None:
-#         print('Nhân viên kinh doanh có lương thấp nhất:', nv_bh_co_luong_thap_nhat._hoTen)
-#     else:
-#         print('Không có nhân viên bán hàng')
-#
-#     print('Tên nhân viên có mã 59:', cty.tim_nv(59))
-
-
 if __name__ == '__main__':
-    ql1 = nvQuanLy(101, hoTen='Nguyễn Trường Thọ', luongCB=40_000_000,
-                             soNgayLam=22, hsTrachNhiem=3)
-    ql1.tinh_luong()
-    print(ql1.__str__())
+    cty = CongTy(maCongTy='CT1', tenCongTy='Cong Ty 1')
+    cty.them_nhan_vien(dsNhanVien)
+
+    cty.tinh_luong_thang_NV()
+    cty.xuat_tat_ca_nhan_vien()
+
+    nv_luong_cao_nhat = cty.tim_NV_luong_cao_nhat()
+    if nv_luong_cao_nhat is not None:
+        print('Nhân viên có lương cao nhất:', nv_luong_cao_nhat._hoTen)
+    else:
+        print('Không có nhân viên')
+
+    nv_bh_co_luong_thap_nhat = cty.tim_NV_BH_luong_thap_nhat()
+    if nv_bh_co_luong_thap_nhat is not None:
+        print('Nhân viên kinh doanh có lương thấp nhất:', nv_bh_co_luong_thap_nhat._hoTen)
+    else:
+        print('Không có nhân viên bán hàng')
+
+    print('Tên nhân viên có mã 59:', cty.tim_nv(59))
+
+
