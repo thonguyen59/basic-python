@@ -44,3 +44,6 @@ if __name__ == '__main__':
         if isinstance(nv, NVVP):
             nv.printNVVP()
         else: nv.printNVBH()
+
+
+#     Tính đa hình là khi 2 phương thức printNVVP và print NVBH có cùng tên với nha

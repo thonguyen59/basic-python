@@ -1,0 +1,41 @@
+Trựu tượng:
+
+from abc import ABC, abstractmethod
+
+class LopTruTuong(ABC):
+    @abstractmethod
+    def tinhLuong(self):
+        pass
+
+class NhanVien(LopTruTuong):
+    def __init__(self, maNV: int, **kwargs):
+        self._maNV = maNV
+        self._hoTen = kwargs.get('hoTen','')
+
+Đóng gói:
+set get cho thuộc tính private:
+
+class NhanVien(NhanVienTruTuong):
+    def __init__(self, maNV: int, **kwargs)
+        self.__name = kwargs.get('name', '')
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+class NVVP(NhanVien):
+    ....
+
+    def print(self):
+        print(self.name)
+
+Ghi thêm doc cho từng function:
+
+    ---Nội dung---
+
+
+Hàm main ghi đầy đủ câu hỏi
