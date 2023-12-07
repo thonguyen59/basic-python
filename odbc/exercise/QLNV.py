@@ -1,4 +1,6 @@
-import random
+import tkinter as tk
+from tkinter import ttk
+from tkinter import *
 from abc import ABC, abstractmethod
 from ODBC import ODBC
 
@@ -14,10 +16,10 @@ class CongTy:
         CongTy.soNV += 1
 
     def tim_nhan_vien(self, maNV: int):
-        return [nv for nv in self.dsNV if nv.maNhanVien == maNhanVien]
+        return [nv for nv in self.dsNV if nv.maNhanVien == maNV]
 
     def tim_NV_BH_luong_thap_nhat(self):
-        nv_bh = [nv for nv in self.__dsNV if isinstance(nv, nvBanHang)]
+        nv_bh = [nv for nv in self.__dsNV if isinstance(nv, NVBanHang)]
         return min(nv_bh, key=lambda nv: nv.luongThang)
 
     def nv_co_luong_cao_nhat(self):
@@ -37,8 +39,26 @@ class CongTy:
         for nv in self.__dsNV:
             print(nv)
 
+    def hien_thi(self):
+        window = tk.Tk()
+
+        tree = ttk.Treeview(window)
+
+        tree["columns"] = ("c1", "c2", "c3")
+
+        tree.heading("c1", text="Cột 1")
+        tree.heading("c2", text="Cột 2")
+        tree.heading("c3", text="Cột 3")
+
+        for nv in self.__dsNV:
+            tree.insert("", tk.END, text="Dòng 1", values=nv.__str__())
+
+        tree.pack()
+
+        window.mainloop()
+
     def luu_luong_hang_thang(self):
-        db = ODBC(driver='SQL Server', server='sadmin', database='uit', username='sa', password='123456')
+        db = ODBC(driver='SQL Server', server='GROOO0030', database='qlnv', username='', password='')
         db.connect()
 
         query = """
@@ -56,20 +76,20 @@ class CongTy:
         for nv in self.__dsNV:
             luongThang = nv._luongThang
 
-            query = f"""IF EXISTS (SELECT 1 FROM LuongHangThang WHERE MaNhanVien = '{nv._maNV}')
+            query = f"""IF EXISTS (SELECT 1 FROM LuongThangNV WHERE MaNhanVien = '{nv._maNhanVien}')
                         BEGIN
-                            UPDATE LuongHangThang SET luongThang = {luongThang} WHERE MaNhanVien = '{nv._maNV}';
+                            UPDATE LuongThangNV SET luongThang = {luongThang} WHERE MaNhanVien = '{nv._maNhanVien}';
                         END
                         ELSE
                         BEGIN
-                            INSERT INTO LuongHangThang (MaNhanVien, luongThang) VALUES ('{nv._maNV}', {luongThang});
+                            INSERT INTO LuongThangNV (MaNhanVien, luongThang) VALUES ('{nv._maNhanVien}', {luongThang});
                         END"""
             db.execute_query(query)
 
         db.conn.commit()
 
     def loadDatabase(self):
-        db = ODBC(driver='SQL Server', server='sadmin', database='uit', username='sa', password='123456')
+        db = ODBC(driver='SQL Server', server='GROOO0030', database='qlnv', username='', password='')
         db.connect()
 
         query = """SELECT * FROM NhanVien;"""
@@ -86,14 +106,14 @@ class CongTy:
 
             for cham_cong_record in cham_cong_records:
 
-                if record[0] == cham_cong_record[0]:  # So sánh MaNhanVien
+                if nhan_vien_record[0] == cham_cong_record[0]:  # So sánh MaNhanVien
 
                     if cham_cong_record[1] == 'Bán Hàng':
-                        nv = NVBanHang(maNV=record[0], hoTen=record[1], luonngCB=float(record[2]),
+                        nv = NVBanHang(maNhanVien=nhan_vien_record[0], hoTen=nhan_vien_record[1], luonngCB=float(nhan_vien_record[2]),
                                      SoNG=cham_cong_record[2], soSP=cham_cong_record[3])
 
                     else:
-                        nv = NVVanPhong(maNV=record[0], hoTen=record[1], luonngCB=float(record[2]),
+                        nv = NVVanPhong(maNhanVien=nhan_vien_record[0], hoTen=nhan_vien_record[1], luonngCB=float(nhan_vien_record[2]),
                                       soNG=cham_cong_record[2])
 
                     self.__dsNV.append(nv)
@@ -104,7 +124,7 @@ class NhanVienTruuTuong(ABC):
         pass
 
     @abstractmethod
-    def tinhLuong(self):
+    def tinh_luong(self):
         pass
 
 
@@ -150,7 +170,7 @@ class NVBanHang(NhanVien):
         print("Lương tháng: {:,.0f} VNĐ".format(self.luongThang))
 
     def __str__(self):
-        return str([self.maNhanVien, self.hoTen, self.luongCB, self.soSP, self.luongThang])
+        return str([self._maNhanVien, self._hoTen, self._luongCB, self.__soSP, self._luongThang])
 
 
 class NVVanPhong(NhanVien):
@@ -177,3 +197,4 @@ if __name__ == '__main__':
     congTy.tinh_luong_thang_NV()
     congTy.xuat_tat_ca_nhan_vien()
     congTy.luu_luong_hang_thang()
+    congTy.hien_thi()
