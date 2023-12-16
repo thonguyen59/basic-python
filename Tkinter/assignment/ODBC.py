@@ -2,7 +2,7 @@ import pyodbc
 
 
 class ODBC:
-    def __init__(self, driver='SQL Server', server='GROOO0030', database='qlnv', username='sa', password='12345'):
+    def __init__(self, driver='SQL Server', server='GROOO0030', database='qlnv', username='', password=''):
         self.driver = driver
         self.server = server
         self.database = database
@@ -63,7 +63,6 @@ class ODBC:
         pass
 
     def save_monthly_salary(self, dsNV):
-
         query = """
         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'LuongHangThang')
         BEGIN

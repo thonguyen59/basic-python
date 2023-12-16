@@ -3,6 +3,7 @@ from GUI import GUI
 
 if __name__ == '__main__':
     cong_ty = CongTy('CT1', tenCty='Cong Ty 1')
+    cong_ty.tinh_luong_hang_thang()
     cong_ty.loadDatabase()
     gui = GUI(cong_ty)
     gui.run()
